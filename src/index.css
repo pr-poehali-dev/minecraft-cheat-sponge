@@ -49,6 +49,10 @@
     --sidebar-border: 220 13% 91%;
 
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    --neon-cyan: 180 100% 50%;
+    --neon-magenta: 320 100% 55%;
+    --neon-purple: 270 100% 60%;
   }
 
   .dark {
@@ -97,5 +101,34 @@
 
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .text-glow-cyan {
+    text-shadow:
+      0 0 8px hsl(var(--neon-cyan)),
+      0 0 20px hsl(var(--neon-cyan) / 0.6);
+  }
+  .text-glow-magenta {
+    text-shadow:
+      0 0 8px hsl(var(--neon-magenta)),
+      0 0 20px hsl(var(--neon-magenta) / 0.6);
+  }
+  .box-glow-cyan {
+    box-shadow:
+      0 0 15px hsl(var(--neon-cyan) / 0.5),
+      inset 0 0 15px hsl(var(--neon-cyan) / 0.15);
+  }
+  .box-glow-magenta {
+    box-shadow:
+      0 0 25px hsl(var(--neon-magenta) / 0.7),
+      inset 0 0 25px hsl(var(--neon-magenta) / 0.2);
+  }
+  .grid-bg {
+    background-image:
+      linear-gradient(hsl(var(--neon-cyan) / 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--neon-cyan) / 0.07) 1px, transparent 1px);
+    background-size: 40px 40px;
   }
 }
