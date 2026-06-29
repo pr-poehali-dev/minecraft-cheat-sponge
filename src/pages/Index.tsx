@@ -50,6 +50,45 @@ const Index = () => {
     return () => clearInterval(interval);
   }, [active, banned, particleRate, spawnParticle]);
 
+  const playBanSound = useCallback(() => {
+    const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+    const ctx = new AudioCtx();
+    const master = ctx.createGain();
+    master.gain.setValueAtTime(0.9, ctx.currentTime);
+    master.connect(ctx.destination);
+
+    const now = ctx.currentTime;
+
+    for (let i = 0; i < 3; i++) {
+      const t = now + i * 0.35;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(880, t);
+      osc.frequency.exponentialRampToValueAtTime(180, t + 0.3);
+      gain.gain.setValueAtTime(0.0001, t);
+      gain.gain.exponentialRampToValueAtTime(0.8, t + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.32);
+      osc.connect(gain);
+      gain.connect(master);
+      osc.start(t);
+      osc.stop(t + 0.33);
+    }
+
+    const sub = ctx.createOscillator();
+    const subGain = ctx.createGain();
+    sub.type = 'square';
+    sub.frequency.setValueAtTime(70, now);
+    subGain.gain.setValueAtTime(0.5, now);
+    subGain.gain.exponentialRampToValueAtTime(0.0001, now + 1.2);
+    sub.connect(subGain);
+    subGain.connect(master);
+    sub.start(now);
+    sub.stop(now + 1.2);
+
+    setTimeout(() => ctx.close(), 1500);
+  }, []);
+
   const handleActivate = () => {
     if (banned) return;
     if (!active) {
@@ -57,6 +96,7 @@ const Index = () => {
       setTimeout(() => {
         setActive(false);
         setBanned(true);
+        playBanSound();
       }, 2500);
     }
   };
